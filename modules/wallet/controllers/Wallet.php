@@ -6,6 +6,10 @@ class Wallet extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('EmailModel');
+        header("Access-Control-Allow-Origin: *");  
+
+            header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT");
+            header("Access-Control-Allow-Headers: Content-Type, Authorization");
     }
 
 
@@ -236,6 +240,8 @@ class Wallet extends CI_Controller {
                 SELECT 
                     u.user_id,
                     u.user_key,
+                    u.user_email,
+                    u.user_names,
                     w.wallet_id AS user_wallet_id,
                     w.balance AS user_balance
                 FROM `users` u
@@ -345,6 +351,8 @@ class Wallet extends CI_Controller {
                 SELECT 
                     u.user_id AS sender_user_id,
                     u.user_key AS sender_user_key,
+                    u.user_names,
+                    u.user_email,
                     w.wallet_id AS sender_wallet_id,
                     w.balance AS sender_balance
                 FROM `users` u
@@ -410,9 +418,9 @@ class Wallet extends CI_Controller {
                         $this->db->insert('transactions', $transactionValuesRecipient);
 
 
-                        $to       = $user['user_email'];
+                        $to       = $sender['user_email'];
                         $subject  = 'Transaction from the wallet app';
-                        $name     = $user['user_names'];
+                        $name     = $sender['user_names'];
                         $date     = date('Y-m-d');
                         $body     = "Received $amount from " . $sender['sender_user_key'];
                 
